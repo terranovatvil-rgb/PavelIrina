@@ -6,7 +6,7 @@
     <title>Павел & Ирина | Приглашение на свадьбу</title>
     <!-- Основные шрифты -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Резервные каллиграфические шрифты на случай, если Le Jardin не загрузится -->
+    <!-- Резервные каллиграфические шрифты -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Comforter&family=Comforter+Brush&family=Great+Vibes&display=swap" rel="stylesheet">
@@ -18,7 +18,6 @@
             box-sizing: border-box;
         }
 
-        /* Запрещаем горизонтальную прокрутку */
         html, body {
             max-width: 100%;
             overflow-x: hidden;
@@ -31,20 +30,17 @@
             line-height: 1.4;
         }
 
-        /* Все изображения не вылезают за ширину экрана */
         img {
             max-width: 100%;
             height: auto;
         }
 
-        /* Контейнер для центровки контента */
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
         }
 
-        /* Секции */
         .section {
             padding: 80px 0;
             border-bottom: 1px solid #eee;
@@ -54,7 +50,6 @@
             border-bottom: none;
         }
 
-        /* Типографика */
         h1, h2, h3, .serif {
             font-family: 'Playfair Display', serif;
             font-weight: 500;
@@ -93,7 +88,6 @@
             margin-right: auto;
         }
 
-        /* Кнопки */
         .btn {
             display: inline-block;
             background: transparent;
@@ -114,47 +108,43 @@
             color: #fff;
         }
 
-        /* Центровка */
         .text-center {
             text-align: center;
         }
 
-        /* ----- КАЛЕНДАРЬ ----- */
-        .calendar-grid {
+        /* ----- НОВЫЙ КАЛЕНДАРЬ (СЕТКА 7x5) ----- */
+        .calendar-wrapper {
             max-width: 400px;
-            margin: 0 auto 40px;
+            margin: 0 auto;
+            font-family: 'Inter', sans-serif;
         }
-
-        .weekdays, .days {
+        .calendar-weekdays {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
             text-align: center;
+            font-weight: 500;
+            font-size: 14px;
             margin-bottom: 15px;
+            color: #000;
         }
-
-        .days {
-            margin-bottom: 40px;
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 12px 8px;
+            text-align: center;
+            margin-bottom: 30px;
         }
-
-        .day-cell {
-            padding: 8px 0;
+        .calendar-day {
             font-size: 16px;
+            padding: 4px 0;
         }
-
-        .day-cell .highlight {
+        .calendar-day.highlight span {
+            display: inline-block;
+            width: 36px;
+            line-height: 36px;
             border: 1px solid #000;
             border-radius: 50%;
-            width: 40px;
-            margin: 0 auto;
-            line-height: 40px;
-        }
-
-        .date-number {
-            font-size: 64px;
-            font-family: 'Playfair Display', serif;
-            letter-spacing: 8px;
-            margin-top: 20px;
+            text-align: center;
         }
 
         /* ----- ТАЙМИНГ ----- */
@@ -166,12 +156,10 @@
             font-size: 18px;
             flex-wrap: wrap;
         }
-
         .timing-time {
             font-weight: 500;
             min-width: 80px;
         }
-
         .timing-event {
             font-weight: 300;
         }
@@ -184,7 +172,6 @@
             margin-left: auto;
             margin-right: auto;
         }
-
         input, select {
             width: 100%;
             padding: 12px;
@@ -193,7 +180,6 @@
             font-size: 16px;
             background: #fff;
         }
-
         label {
             display: block;
             margin-bottom: 8px;
@@ -201,7 +187,7 @@
             letter-spacing: 1px;
         }
 
-        /* ----- ТАЙМЕР ОБРАТНОГО ОТСЧЁТА ----- */
+        /* ----- ТАЙМЕР ----- */
         .timer {
             display: flex;
             justify-content: center;
@@ -209,37 +195,34 @@
             margin-top: 40px;
             flex-wrap: wrap;
         }
-
         .timer-item {
             text-align: center;
         }
-
         .timer-number {
             font-size: 48px;
             font-weight: 500;
             font-family: 'Inter', sans-serif;
             line-height: 1;
         }
-
         .timer-label {
             font-size: 12px;
             letter-spacing: 1px;
             margin-top: 10px;
         }
 
-        /* ----- КАРТА (КВАДРАТНАЯ) ----- */
-        .map-container {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 1 / 1;  /* делает квадрат */
-            margin-top: 30px;
-        }
+        /* ----- КАРТА (оставляем как у вас, но делаем адаптивной) ----- */
         .map-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
-            height: 100%;
+            max-width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+            border: 0;
+        }
+        /* Если хотите квадратную — раскомментируйте, но вы вставили iframe с фиксированной шириной */
+        .custom-map {
+            width: 100%;
+            height: auto;
+            max-width: 100%;
             border: 0;
         }
 
@@ -257,11 +240,6 @@
             height: 400px;
             object-fit: cover;
             max-width: 100%;
-        }
-        .full-width-image {
-            width: 100%;
-            height: auto;
-            margin: 40px 0;
         }
 
         /* ----- ГЛАВНЫЙ ЭКРАН (HERO) ----- */
@@ -291,13 +269,10 @@
             text-shadow: 0 0 10px rgba(0,0,0,0.3);
         }
 
-        /* Контейнер для заголовка и полоски */
         .title-wrapper {
             display: inline-block;
             text-align: center;
         }
-
-        /* Полоска шириной в слово */
         .divider {
             width: 100%;
             height: 2px;
@@ -305,7 +280,7 @@
             margin: 20px 0;
         }
 
-        /* Подключение вашего шрифта Le Jardin */
+        /* Шрифт Le Jardin */
         @font-face {
             font-family: 'Le Jardin';
             src: url('LeJardinRegular.woff2') format('woff2'),
@@ -315,14 +290,12 @@
             font-display: swap;
         }
 
-        /* Каллиграфический шрифт для имён (Le Jardin + резервные) */
         .names-calligraphy {
             font-family: 'Le Jardin', 'Comforter Brush', 'Great Vibes', cursive;
             font-size: 54px;
             margin: 20px 0;
         }
 
-        /* Фотография в hero-блоке */
         .hero-photo {
             max-width: 90%;
             max-height: 50vh;
@@ -360,6 +333,16 @@
             .hero-photo {
                 max-height: 35vh;
             }
+            .calendar-days {
+                gap: 8px 4px;
+            }
+            .calendar-day {
+                font-size: 14px;
+            }
+            .calendar-day.highlight span {
+                width: 30px;
+                line-height: 30px;
+            }
         }
     </style>
 </head>
@@ -373,10 +356,7 @@
                 <div class="divider"></div>
             </div>
             <div class="names-calligraphy">Павел и Ирина</div>
-            
-            <!-- ФОТОГРАФИЯ: замените 'wedding-photo.jpg' на имя вашего файла -->
             <img src="wedding-photo.jpg" alt="Павел и Ирина" class="hero-photo" onerror="this.onerror=null; this.src='https://via.placeholder.com/800x600?text=Ваше+фото+здесь';">
-            
             <div class="date-large">02.06.2026 | 16:00</div>
             <a href="#rsvp" class="btn">Подтвердить присутствие</a>
         </div>
@@ -406,15 +386,15 @@
         </div>
     </div>
 
-    <!-- КАЛЕНДАРЬ С ДАТОЙ -->
+    <!-- НОВЫЙ КАЛЕНДАРЬ С ДАТОЙ (как на фото 2) -->
     <div class="section text-center">
         <div class="container">
             <h2>МЫ ЖДЁМ<br>всё</h2>
-            <div class="calendar-grid">
-                <div class="weekdays">
+            <div class="calendar-wrapper">
+                <div class="calendar-weekdays">
                     <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>
                 </div>
-                <div class="days" id="calendarDays"></div>
+                <div class="calendar-days" id="calendarDaysGrid"></div>
             </div>
             <div class="date-number">02 06 26</div>
             <a href="#rsvp" class="btn" style="margin-top: 40px;">Подтвердить присутствие</a>
@@ -433,8 +413,8 @@
                 <a href="#" class="btn" style="margin: 0 10px;">Как добраться</a>
                 <a href="#rsvp" class="btn" style="margin: 0 10px;">Подтвердить присутствие</a>
             </div>
-            <!-- КВАДРАТНАЯ КАРТА -->
-           <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3A61be4eb1cbc37a2feb332c1f432abf51890675bf3200585323a826a758238915&amp;source=constructor" width="546" height="440" frameborder="0"></iframe>
+            <!-- Ваша карта (оставлена как есть, но добавлен класс для адаптивности) -->
+            <iframe class="custom-map" src="https://yandex.ru/map-widget/v1/?um=constructor%3A61be4eb1cbc37a2feb332c1f432abf51890675bf3200585323a826a758238915&amp;source=constructor" width="100%" height="440" frameborder="0"></iframe>
             <p style="font-size: 12px; margin-top: 10px; color: #666;">* Нажмите на карту, чтобы увеличить или проложить маршрут</p>
         </div>
     </div>
@@ -513,35 +493,50 @@
     </div>
 
     <script>
-        // ---------- ГЕНЕРАЦИЯ КАЛЕНДАРЯ (ИЮНЬ 2026) ----------
+        // ---------- НОВАЯ ГЕНЕРАЦИЯ КАЛЕНДАРЯ (ИЮНЬ 2026, СЕТКА 7x5) ----------
         function generateCalendar() {
-            const daysContainer = document.getElementById('calendarDays');
-            if (!daysContainer) return;
+            const container = document.getElementById('calendarDaysGrid');
+            if (!container) return;
+
             const year = 2026;
-            const month = 5; // 5 = июнь
-            const firstDayOfMonth = new Date(year, month, 1).getDay();
+            const month = 5; // Июнь (0-индексация)
+            const firstDayOfMonth = new Date(year, month, 1).getDay(); // 0 = воскресенье
+            // Сдвиг для начала с понедельника: Пн = 0, Вс = 6
             let startOffset = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
             const daysInMonth = new Date(year, month + 1, 0).getDate();
-            let calendarHTML = '';
-            let dayCount = 1;
-            for (let i = 0; i < 6; i++) {
-                let row = '<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-bottom: 10px;">';
-                for (let j = 0; j < 7; j++) {
-                    if (i === 0 && j < startOffset) {
-                        row += '<div></div>';
-                    } else if (dayCount > daysInMonth) {
-                        row += '<div></div>';
-                    } else {
-                        const isHighlight = (dayCount === 2);
-                        row += `<div class="day-cell"><div class="${isHighlight ? 'highlight' : ''}" style="${isHighlight ? 'width: 40px; margin: 0 auto; line-height: 40px;' : ''}">${dayCount}</div></div>`;
-                        dayCount++;
-                    }
-                }
-                row += '</div>';
-                calendarHTML += row;
-                if (dayCount > daysInMonth) break;
+
+            let daysArray = [];
+            // Пустые ячейки до первого дня
+            for (let i = 0; i < startOffset; i++) {
+                daysArray.push({ day: null, highlight: false });
             }
-            daysContainer.innerHTML = calendarHTML;
+            // Числа месяца
+            for (let d = 1; d <= daysInMonth; d++) {
+                daysArray.push({ day: d, highlight: (d === 2) });
+            }
+            // Добиваем до 42 ячеек (6 строк)
+            while (daysArray.length < 42) {
+                daysArray.push({ day: null, highlight: false });
+            }
+
+            container.innerHTML = '';
+            daysArray.forEach(cell => {
+                const div = document.createElement('div');
+                div.className = 'calendar-day';
+                if (cell.day !== null) {
+                    if (cell.highlight) {
+                        div.classList.add('highlight');
+                        const span = document.createElement('span');
+                        span.textContent = cell.day;
+                        div.appendChild(span);
+                    } else {
+                        div.textContent = cell.day;
+                    }
+                } else {
+                    div.innerHTML = '&nbsp;';
+                }
+                container.appendChild(div);
+            });
         }
 
         // ---------- ТАЙМЕР ----------
