@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Павел & Ирина | Приглашение на свадьбу</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
     <style>
         /* ----- СБРОС И ОБЩИЕ НАСТРОЙКИ ----- */
         * {
@@ -279,7 +280,32 @@
             color: white;
             text-shadow: 0 0 10px rgba(0,0,0,0.3);
         }
+/* Каллиграфический шрифт для имён */
+.names-calligraphy {
+    font-family: 'Great Vibes', cursive;
+    font-size: 56px;
+    margin: 20px 0;
+    color: white;
+    text-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
 
+/* Чёрная линия под THE WEDDING DAY */
+.divider {
+    width: 80px;
+    height: 2px;
+    background-color: white;
+    margin: 20px auto;
+}
+
+/* Фотография в hero-блоке */
+.hero-photo {
+    max-width: 90%;
+    max-height: 40vh;
+    object-fit: cover;
+    border-radius: 8px; /* чуть скругляем углы, можно убрать */
+    margin: 20px 0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
         /* ----- АДАПТАЦИЯ ПОД ТЕЛЕФОНЫ ----- */
         @media (max-width: 768px) {
             .section {
@@ -308,6 +334,18 @@
 
     <!-- ГЛАВНЫЙ ЭКРАН -->
     <div class="hero">
+    <div>
+        <h1>THE WEDDING DAY</h1>
+        <div class="divider"></div>
+        <div class="names-calligraphy">Павел и Ирина</div>
+        
+        <!-- Здесь будет ваша фотография -->
+        <img src="wedding-photo.jpg" alt="Павел и Ирина" class="hero-photo">
+        
+        <div class="date-large">02.06.2026 | 16:00</div>
+        <a href="#rsvp" class="btn">Подтвердить присутствие</a>
+    </div>
+</div>
         <div>
             <h1>THE WEDDING DAY</h1>
             <div class="date-large">02.06.2026 | 16:00</div>
