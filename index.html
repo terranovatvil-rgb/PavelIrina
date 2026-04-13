@@ -6,7 +6,7 @@
     <title>Павел & Ирина | Приглашение на свадьбу</title>
     <!-- Основные шрифты -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Каллиграфические шрифты (Comforter, Comforter Brush, Great Vibes) -->
+    <!-- Резервные каллиграфические шрифты на случай, если Le Jardin не загрузится -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Comforter&family=Comforter+Brush&family=Great+Vibes&display=swap" rel="stylesheet">
@@ -227,15 +227,20 @@
             margin-top: 10px;
         }
 
-        /* ----- КАРТА (ЗАГОТОВКА) ----- */
-        .map-placeholder {
-            background: #f5f5f5;
-            height: 300px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        /* ----- КАРТА (КВАДРАТНАЯ) ----- */
+        .map-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;  /* делает квадрат */
             margin-top: 30px;
-            font-family: 'Inter', sans-serif;
+        }
+        .map-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
         }
 
         /* ----- СЕТКА ДЛЯ ФОТОГРАФИЙ ----- */
@@ -286,13 +291,13 @@
             text-shadow: 0 0 10px rgba(0,0,0,0.3);
         }
 
-        /* Контейнер для заголовка и полоски, чтобы полоска была шириной в слово */
+        /* Контейнер для заголовка и полоски */
         .title-wrapper {
             display: inline-block;
             text-align: center;
         }
 
-        /* Полоска теперь такой же ширины, как и текст заголовка */
+        /* Полоска шириной в слово */
         .divider {
             width: 100%;
             height: 2px;
@@ -300,9 +305,19 @@
             margin: 20px 0;
         }
 
-        /* Каллиграфический шрифт для имён (Comforter Brush) */
+        /* Подключение вашего шрифта Le Jardin */
+        @font-face {
+            font-family: 'Le Jardin';
+            src: url('lejardin.woff2') format('woff2'),
+                 url('lejardin.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        /* Каллиграфический шрифт для имён (Le Jardin + резервные) */
         .names-calligraphy {
-            font-family: 'Comforter Brush', cursive;
+            font-family: 'Le Jardin', 'Comforter Brush', 'Great Vibes', cursive;
             font-size: 56px;
             margin: 20px 0;
         }
@@ -353,7 +368,6 @@
     <!-- ГЛАВНЫЙ ЭКРАН (HERO) -->
     <div class="hero">
         <div>
-            <!-- Оборачиваем заголовок и полоску в общий контейнер -->
             <div class="title-wrapper">
                 <h1>THE WEDDING DAY</h1>
                 <div class="divider"></div>
@@ -418,7 +432,13 @@
             <div style="margin: 20px 0;">
                 <a href="#" class="btn" style="margin: 0 10px;">Как добраться</a>
                 <a href="#rsvp" class="btn" style="margin: 0 10px;">Подтвердить присутствие</a>
-            <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3A61be4eb1cbc37a2feb332c1f432abf51890675bf3200585323a826a758238915&amp;source=constructor" width="100%" height="615" frameborder="0"></iframe>
+            </div>
+            <!-- КВАДРАТНАЯ КАРТА -->
+            <div class="map-container">
+                <!-- ВСТАВЬТЕ ВАШ КОД iframe ОТ ЯНДЕКС.КАРТ ВМЕСТО ПРИМЕРА НИЖЕ -->
+                <iframe src="https://yandex.ru/map-widget/v1/?um=constructor&your_code_here" allowfullscreen></iframe>
+            </div>
+            <p style="font-size: 12px; margin-top: 10px; color: #666;">* Нажмите на карту, чтобы увеличить или проложить маршрут</p>
         </div>
     </div>
 
