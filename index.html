@@ -184,18 +184,13 @@
 
         /* Герой-секция */
         .hero-section {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background-image: url('чб.png'); /* Заглушка, замените на свое */
-            background-color: #333; /* Фолбек */
-            background-size: cover;
-            background-position: center;
-            color: white;
-            padding: 0 25px;
-            position: relative;
+         height: 100vh;
+         background-image: url('шапка.png');
+         background-size: cover; /* Картинка заполняет весь экран */
+         background-position: center center; /* Центрируем по вертикали и горизонтали */
+         background-repeat: no-repeat;
+         /* На мобильных устройствах принудительно отключаем фиксацию */
+         background-attachment: scroll;
         }
 
         .cursive {
@@ -560,7 +555,7 @@
 <div class="main-wrapper">
     
     <!-- Секция 1: Герой -->
-    <section class="hero-section" style="background-attachment: fixed;">
+    <section class="hero-section">
         <div style="letter-spacing: 5px; text-transform: uppercase; font-size: 1.1rem; margin-top: -80px;">The Wedding Day</div>
         <div class="cursive" style="margin: 40px 0;">Павел & Ирина</div>
     </section>
