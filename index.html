@@ -7,6 +7,102 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@1,400&display=swap" rel="stylesheet">
     
     <style>
+	/* Стили для фона и контейнера конверта */
+#envelope-wrapper {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: #e5ddd3; /* Цвет фона за конвертом */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    transition: opacity 1s ease, visibility 1s;
+}
+
+/* Сам конверт */
+.envelope {
+    position: relative;
+    width: 300px;
+    height: 200px;
+    background: #d4c7b8;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.5s ease;
+}
+
+.envelope:hover {
+    transform: translateY(-10px) scale(1.02);
+}
+
+/* Верхний клапан (крышка) конверта */
+.envelope::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    z-index: 2;
+    border-top: 110px solid #c5b6a5;
+    border-left: 150px solid transparent;
+    border-right: 150px solid transparent;
+    transform-origin: top;
+    transition: transform 0.5s ease 0.1s;
+}
+
+/* Состояние при открытии — крышка откидывается */
+.envelope.open::before {
+    transform: rotateX(180deg);
+    z-index: 0;
+}
+
+/* Листок бумаги внутри конверта */
+.envelope-paper {
+    position: absolute;
+    top: 10px; left: 10px; right: 10px; bottom: 10px;
+    background: white;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.8s ease;
+}
+
+/* Листок выезжает вверх */
+.envelope.open .envelope-paper {
+    transform: translateY(-120px);
+}
+
+/* Текст на листке и надпись на конверте */
+.envelope-text {
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 0.7rem;
+    color: #2c2e36;
+}
+
+.envelope-label {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    font-family: 'LeJardin', cursive;
+    font-size: 2rem;
+    color: white;
+    z-index: 3;
+    pointer-events: none;
+}
+
+/* Состояния для основного контента сайта */
+#main-content {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1.5s ease;
+}
+
+#main-content.visible {
+    opacity: 1;
+    visibility: visible;
+}
         /* Подключение вашего рукописного шрифта */
         @font-face {
             font-family: 'LeJardin';
@@ -18,8 +114,8 @@
         :root {
             --bg-beige: #e5ddd3;
             --text-dark: #2c2e36;
-            --text-label: #3a4150;
-            --text-muted: #71717a;
+            --text-label: #3a4150; /* Цвет для заголовков формы */
+            --text-muted: #71717a; /* Цвет для подзаголовков формы */
             --accent-gold: #b5a491;
             --white: #ffffff;
             --gray-btn: #32353f;
@@ -36,102 +132,11 @@
             overflow-x: hidden;
         }
 
+        /* Блокировка скролла, когда открыта форма */
         body.modal-open {
             overflow: hidden;
         }
 
-        /* === СТИЛИ КОНВЕРТА === */
-        #envelope-wrapper {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--bg-beige);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            transition: opacity 1s ease, visibility 1s;
-        }
-
-        .envelope {
-            position: relative;
-            width: 300px;
-            height: 200px;
-            background: #d4c7b8;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            cursor: pointer;
-            transition: transform 0.5s ease;
-        }
-
-        .envelope:hover {
-            transform: translateY(-10px) scale(1.02);
-        }
-
-        .envelope::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            z-index: 2;
-            border-top: 110px solid #c5b6a5;
-            border-left: 150px solid transparent;
-            border-right: 150px solid transparent;
-            transform-origin: top;
-            transition: transform 0.5s ease 0.1s;
-        }
-
-        .envelope.open::before {
-            transform: rotateX(180deg);
-            z-index: 0;
-        }
-
-        .envelope-paper {
-            position: absolute;
-            top: 10px; left: 10px; right: 10px; bottom: 10px;
-            background: white;
-            z-index: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            transition: transform 0.8s ease;
-        }
-
-        .envelope.open .envelope-paper {
-            transform: translateY(-120px);
-        }
-
-        .envelope-text {
-            font-family: 'Montserrat', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            font-size: 0.7rem;
-            color: var(--text-dark);
-        }
-
-        .envelope-label {
-            position: absolute;
-            bottom: 20px;
-            width: 100%;
-            text-align: center;
-            font-family: 'LeJardin', cursive;
-            font-size: 2rem;
-            color: white;
-            z-index: 3;
-            pointer-events: none;
-        }
-
-        /* СКРЫТИЕ ОСНОВНОГО КОНТЕНТА */
-        #main-content {
-            opacity: 0;
-            transition: opacity 1.5s ease;
-            visibility: hidden;
-        }
-
-        #main-content.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* === ОСНОВНЫЕ СТИЛИ САЙТА === */
         .main-wrapper {
             max-width: 450px;
             margin: 0 auto;
@@ -144,6 +149,7 @@
 
         section { padding: 50px 25px; text-align: center; }
 
+        /* АНИМАЦИИ ПОЯВЛЕНИЯ */
         .reveal {
             opacity: 0;
             transform: translateY(30px);
@@ -155,18 +161,10 @@
             transform: translateY(0);
         }
 
-        /* Класс для фото без обрезки (для панорамных изображений) */
-        .wide-photo {
-            width: 100%;
-            height: auto;
-            display: block;
-            margin: 25px 0;
-            border-radius: 2px;
-        }
-
+        /* ЭФФЕКТ ПАРАЛЛАКСА ДЛЯ ФОТО */
         .parallax-container {
             width: 100%;
-            height: 350px;
+            height: 180px;
             overflow: hidden;
             position: relative;
             margin: 25px 0;
@@ -184,29 +182,20 @@
             will-change: transform;
         }
 
-        /* ИСПРАВЛЕННАЯ Герой-секция */
+        /* Герой-секция */
         .hero-section {
             height: 100vh;
-            min-height: 100dvh; 
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background-image: url('чб.png'); 
-            background-color: #333;
+            background-image: url('чб.png'); /* Заглушка, замените на свое */
+            background-color: #333; /* Фолбек */
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
             color: white;
             padding: 0 25px;
             position: relative;
-            background-attachment: scroll; 
-        }
-
-        @media (hover: hover) and (pointer: fine) {
-            .hero-section {
-                background-attachment: fixed;
-            }
         }
 
         .cursive {
@@ -361,7 +350,7 @@
             opacity: 0.3;
         }
 
-        /* === СТИЛИ ФОРМЫ === */
+        /* === СТИЛИ ФОРМЫ И МОДАЛЬНОГО ОКНА === */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -369,47 +358,191 @@
             z-index: 1000;
             display: none;
             justify-content: center;
-            align-items: flex-end;
+            align-items: flex-end; /* Выезд снизу */
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-        .modal-overlay.active { display: flex; opacity: 1; }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
         .modal-content {
             background: var(--white);
-            width: 100%; max-width: 450px; max-height: 90vh;
-            border-radius: 20px 20px 0 0; padding: 25px;
-            box-sizing: border-box; position: relative; overflow-y: auto;
-            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            width: 100%;
+            max-width: 450px;
+            max-height: 90vh;
+            border-radius: 20px 20px 0 0;
+            padding: 25px;
+            box-sizing: border-box;
+            position: relative;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             text-align: left;
         }
-        .modal-overlay.active .modal-content { transform: translateY(0); }
-        .close-btn {
-            position: absolute; top: 20px; left: 20px; width: 28px; height: 28px;
-            background: #a1a1aa; color: white; border: none; border-radius: 50%;
-            font-size: 16px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; padding: 0; z-index: 10;
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
         }
-        .form-header { text-align: center; color: var(--text-muted); font-size: 1.05rem; font-weight: 400; margin: 10px 30px 30px; line-height: 1.4; }
-        .form-group { margin-bottom: 25px; }
-        .form-label { display: block; color: var(--text-label); font-weight: 600; font-size: 0.95rem; margin-bottom: 12px; line-height: 1.4; }
-        .form-input { width: 100%; border: none; border-bottom: 1px solid var(--text-dark); padding: 8px 0; font-size: 1rem; font-family: 'Montserrat', sans-serif; color: var(--text-dark); background: transparent; border-radius: 0; outline: none; }
-        .form-input::placeholder { color: #a1a1aa; font-weight: 300; font-size: 0.9rem; }
-        .form-input:focus { border-bottom-color: var(--accent-gold); }
-        .custom-radio, .custom-checkbox { display: flex; align-items: center; margin-bottom: 12px; cursor: pointer; font-size: 0.9rem; color: var(--text-label); font-weight: 400; }
-        .custom-radio input, .custom-checkbox input { position: absolute; opacity: 0; cursor: pointer; height: 0; width: 0; }
-        .radio-mark { height: 16px; width: 16px; border: 1px solid var(--text-label); border-radius: 50%; margin-right: 12px; position: relative; flex-shrink: 0; }
-        .custom-radio input:checked ~ .radio-mark::after { content: ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; border-radius: 50%; background: var(--text-label); }
-        .check-mark { height: 16px; width: 16px; border: 1px solid var(--text-label); border-radius: 2px; margin-right: 12px; position: relative; flex-shrink: 0; }
-        .custom-checkbox input:checked ~ .check-mark::after { content: ""; position: absolute; left: 5px; top: 2px; width: 4px; height: 8px; border: solid var(--text-label); border-width: 0 2px 2px 0; transform: rotate(45deg); }
-        .submit-btn { width: 100%; background: var(--text-dark); color: var(--white); border: none; padding: 16px; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; border-radius: 4px; margin-top: 20px; cursor: pointer; font-family: 'Montserrat', sans-serif; }
-        .success-message { display: none; text-align: center; padding: 60px 20px; }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 28px;
+            height: 28px;
+            background: #a1a1aa;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 0;
+            z-index: 10;
+        }
+
+        .form-header {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            font-weight: 400;
+            margin: 10px 30px 30px;
+            line-height: 1.4;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            color: var(--text-label);
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        /* Текстовые поля (линия снизу) */
+        .form-input {
+            width: 100%;
+            border: none;
+            border-bottom: 1px solid var(--text-dark);
+            padding: 8px 0;
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-dark);
+            background: transparent;
+            border-radius: 0; /* Для iOS */
+            outline: none;
+        }
+        
+        .form-input::placeholder {
+            color: #a1a1aa;
+            font-weight: 300;
+            font-size: 0.9rem;
+        }
+
+        .form-input:focus {
+            border-bottom-color: var(--accent-gold);
+        }
+
+        /* Стили для кастомных радио и чекбоксов */
+        .custom-radio, .custom-checkbox {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--text-label);
+            font-weight: 400;
+        }
+
+        .custom-radio input, .custom-checkbox input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        /* Иконка радио */
+        .radio-mark {
+            height: 16px;
+            width: 16px;
+            border: 1px solid var(--text-label);
+            border-radius: 50%;
+            margin-right: 12px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .custom-radio input:checked ~ .radio-mark::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--text-label);
+        }
+
+        /* Иконка чекбокса */
+        .check-mark {
+            height: 16px;
+            width: 16px;
+            border: 1px solid var(--text-label);
+            border-radius: 2px;
+            margin-right: 12px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .custom-checkbox input:checked ~ .check-mark::after {
+            content: "";
+            position: absolute;
+            left: 5px;
+            top: 2px;
+            width: 4px;
+            height: 8px;
+            border: solid var(--text-label);
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: var(--text-dark);
+            color: var(--white);
+            border: none;
+            padding: 16px;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 4px;
+            margin-top: 20px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        /* Сообщение об успешной отправке */
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+        }
         .success-message h3 { font-family: 'LeJardin', cursive; font-size: 2.5rem; color: var(--accent-gold); margin-bottom: 10px; }
         .success-message p { font-size: 0.95rem; line-height: 1.5; }
     </style>
 </head>
 <body>
-
-<!-- СЛОЙ КОНВЕРТА -->
 <div id="envelope-wrapper">
     <div class="envelope" id="envelope" onclick="openEnvelope()">
         <div class="envelope-paper">
@@ -422,239 +555,251 @@
     </div>
 </div>
 
-<!-- ОСНОВНОЙ КОНТЕНТ (СКРЫТ ДО КЛИКА) -->
 <div id="main-content">
-    <div class="main-wrapper">
+    </div>
+<div class="main-wrapper">
+    
+    <!-- Секция 1: Герой -->
+    <section class="hero-section">
+        <div style="letter-spacing: 5px; text-transform: uppercase; font-size: 1.1rem; margin-top: -80px;">The Wedding Day</div>
+        <div class="cursive" style="margin: 20px 0;">Павел & Ирина</div>
+    </section>
+
+    <!-- Секция 2: Приветствие -->
+    <section class="reveal" style="background-color: var(--bg-beige);">
+        <div class="cursive" style="color: var(--text-dark);">Мы</div>
+        <h2 class="section-title">Официально станем семьей</h2>
+        <p style="font-size: 0.9rem; line-height: 1.7; font-weight: 300;">
+            Если вы сейчас читаете этот текст, значит мы приглашаем Вас на самый главный день в нашей жизни.
+        </p>
         
-        <!-- Секция 1: Герой -->
-        <section class="hero-section">
-            <div style="letter-spacing: 5px; text-transform: uppercase; font-size: 1.1rem; margin-top: -80px;">The Wedding Day</div>
-            <div class="cursive" style="margin: 20px 0;">Павел & Ирина</div>
-        </section>
+        <div class="parallax-container">
+            <div class="parallax-img" style="background-image: url('руки.png');"></div>
+        </div>
+    </section>
 
-        <!-- Секция 2: Приветствие -->
-        <section class="reveal" style="background-color: var(--bg-beige);">
-            <div class="cursive" style="color: var(--text-dark);">Мы</div>
-            <h2 class="section-title">Официально станем семьей</h2>
-            <p style="font-size: 0.9rem; line-height: 1.7; font-weight: 300;">
-                Если вы сейчас читаете этот текст, значит мы приглашаем Вас на самый главный день в нашей жизни.
-            </p>
-            
-            <!-- Исправлено: фото "руки.png" теперь выводится полностью, без обрезки и пустых полей -->
-            <img src="руки.png" class="wide-photo" alt="Наши руки">
-        </section>
+    <!-- Секция 3: Moments -->
+    <section class="reveal">
+        <div class="section-title" style="letter-spacing: 5px; margin-bottom: 30px;">MOMENTS</div>
+        <div class="moments-grid">
+            <div class="moment-img moment-full" style="background-image: url('закат.png');"></div>
+            <div class="moment-img moment-half" style="background-image: url('уют.png');"></div>
+            <div class="moment-img moment-half" style="background-image: url('пляж.png');"></div>
+        </div>
+    </section>
 
-        <!-- Секция 3: Moments -->
-        <section class="reveal">
-            <div class="section-title" style="letter-spacing: 5px; margin-bottom: 30px;">MOMENTS</div>
-            <div class="moments-grid">
-                <div class="moment-img moment-full" style="background-image: url('закат.png');"></div>
-                <div class="moment-img moment-half" style="background-image: url('уют.png');"></div>
-                <div class="moment-img moment-half" style="background-image: url('пляж.png');"></div>
-            </div>
-        </section>
-
-        <!-- Секция 4: Календарь -->
-        <section class="reveal">
-            <div style="position: relative; display: inline-block; margin-bottom: 30px; text-align: left;">
-                <h2 style="font-weight: 300; letter-spacing: 4px; text-transform: uppercase; font-size: 1.3rem; margin: 0; position: relative; z-index: 2;">МЫ ЖДЁМ</h2>
-                <div class="cursive" style="position: absolute; right: -55px; top: -15px; font-size: 3.5rem; color: #f0f0f0; z-index: 1;">Вас</div>
-            </div>
-            
-            <div class="calendar-container">
-                <div class="cursive" style="font-size: 3rem; color: var(--text-dark); margin-bottom: 20px;">Июнь</div>
-                <div class="calendar-grid">
-                    <div>1</div>
-                    <div class="heart-date">2<div class="heart-date-svg"></div></div>
-                    <div>3</div><div>4</div><div>5</div><div>6</div><div>7</div>
-                    <div>8</div><div>9</div><div>10</div><div>11</div><div>12</div><div>13</div><div>14</div>
-                    <div>15</div><div>16</div><div>17</div><div>18</div><div>19</div><div>20</div><div>21</div>
-                    <div>22</div><div>23</div><div>24</div><div>25</div><div>26</div><div>27</div><div>28</div>
-                    <div>29</div><div>30</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Секция 5: Локация 1 -->
-        <section class="reveal">
-            <div class="cursive">Локация №1</div>
-            <p class="section-title">Дворец Бракосочетания</p>
-            
-            <div class="parallax-container">
-                <div class="parallax-img" style="background-image: url('загс.jpg');"></div>
-            </div>
-            
-            <h3 style="letter-spacing: 3px; font-weight: 500;">ТАГАНСКИЙ ЗАГС</h3>
-            <p style="font-size: 0.85rem; color: #666;">г. Москва, Таганская ул., 44</p>
-            
-            <div class="map-wrapper">
-                <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3A61be4eb1cbc37a2feb332c1f432abf51890675bf3200585323a826a758238915&amp;source=constructor"></iframe>
-            </div>
-            <a href="https://yandex.ru/maps/-/CDuay-Yn" target="_blank" class="btn">Маршрут в ЗАГС</a>
-        </section>
-
-        <!-- Секция 6: Локация 2 -->
-        <section class="reveal" style="background-color: #fafafa;">
-            <div class="cursive">Локация №2</div>
-            <p class="section-title">Праздничный ужин</p>
-            
-            <div class="parallax-container">
-                <div class="parallax-img" style="background-image: url('домик.jpg');"></div>
-            </div>
-            
-            <h3 style="letter-spacing: 3px; font-weight: 500;">ЗАГОРОДНЫЙ ДОМИК</h3>
-            <p style="font-size: 0.85rem; color: #666;">МО, Истринский район, пос. Светлый</p>
-            
-            <div class="map-wrapper">
-                <iframe src="https://yandex.ru/map-widget/v1/?ll=36.848529%2C55.918901&z=12"></iframe>
-            </div>
-            <a href="https://yandex.ru/maps" target="_blank" class="btn">Маршрут к Домику</a>
-        </section>
-
-        <!-- Тайминг -->
-        <section class="reveal" style="background-color: var(--bg-beige);">
-            <h2 class="section-title">ТАЙМИНГ ДНЯ</h2>
-            <div class="timing-wrapper">
-                <div class="timing-item">
-                    <div class="time-label">13:00</div><div class="timing-dot"></div>
-                    <div class="timing-content"><div class="timing-content-desc">Сбор гостей</div></div>
-                </div>
-                <div class="timing-item">
-                    <div class="time-label">13:30</div><div class="timing-dot"></div>
-                    <div class="timing-content"><div class="timing-content-desc">Торжественная регистрация</div></div>
-                </div>
-                <div class="timing-item">
-                    <div class="time-label">14:00</div><div class="timing-dot"></div>
-                    <div class="timing-content"><div class="timing-content-desc">Фотосессия молодых</div></div>
-                </div>
-                <div class="timing-item">
-                    <div class="time-label">16:00</div><div class="timing-dot"></div>
-                    <div class="timing-content"><div class="timing-content-desc">Смена локации. Домик</div></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Секция пожеланий -->
-        <section class="reveal wishes-section">
-            <div class="wishes-box">
-                <div class="cursive" style="font-size: 2.8rem; margin-bottom: 15px;">Пожелания</div>
-                <h2 class="section-title" style="margin-bottom: 25px;">Ваше внимание - лучший подарок</h2>
-                <p style="font-size: 0.9rem; line-height: 1.8; font-weight: 300; color: #555;">
-                    Главное для нас — Ваше присутствие в этот день. Но если вы захотите сделать нам подарок, мы будем признательны за вклад в бюджет нашей будущей семьи.
-                </p>
-                <div style="margin-top: 30px;">
-                    <div style="font-size: 1.5rem; margin-bottom: 10px; color: var(--accent-gold);">🍷</div>
-                    <p style="font-size: 0.85rem; font-style: italic; color: #777;">
-                        Будем благодарны, если вместо цветов вы подарите нам бутылку вашего любимого вина для нашей коллекции.
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Таймер -->
-        <section id="rsvp" class="reveal">
-            <p class="section-title">До встречи осталось</p>
-            <div class="timer-display">
-                <div class="timer-item"><div class="timer-num-box" id="days">00</div><span>дней</span></div>
-                <div class="timer-item"><div class="timer-num-box" id="hours">00</div><span>часов</span></div>
-                <div class="timer-item"><div class="timer-num-box" id="minutes">00</div><span>минут</span></div>
-                <div class="timer-item"><div class="timer-num-box" id="seconds">00</div><span>секунд</span></div>
-            </div>
-        </section>
-
-        <section class="reveal" style="background-color: var(--white); padding-bottom: 120px;">
-            <div class="cursive" style="margin-bottom: 20px;">Павел & Ирина</div>
-            <h2 style="font-weight: 300; letter-spacing: 5px;">ЖДЁМ ВАС!</h2>
-        </section>
-
-        <button onclick="openModal()" class="fixed-btn">Подтвердить присутствие</button>
-
-    </div> <!-- Конец main-wrapper -->
-
-    <!-- === МОДАЛЬНОЕ ОКНО С ФОРМОЙ === -->
-    <div class="modal-overlay" id="formModal">
-        <div class="modal-content">
-            <button class="close-btn" onclick="closeModal()">
-                <svg width="12" height="12" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 1L13 13M1 13L13 1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-            </button>
-
-            <div id="formContainer">
-                <div class="form-header">
-                    Пожалуйста, подтвердите Ваше присутствие
-                </div>
-
-                <form id="rsvpForm" action="https://formspree.io/f/xqewqroj" method="POST">
-                    
-                    <div class="form-group">
-                        <label class="form-label">Имя и фамилия</label>
-                        <input type="text" name="Имя и фамилия" class="form-input" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Планируете ли Вы присутствовать на нашей свадьбе?</label>
-                        <label class="custom-radio">
-                            <input type="radio" name="Присутствие" value="С удовольствием приду!" required>
-                            <span class="radio-mark"></span> С удовольствием приду!
-                        </label>
-                        <label class="custom-radio">
-                            <input type="radio" name="Присутствие" value="К сожалению, не смогу">
-                            <span class="radio-mark"></span> К сожалению, не смогу
-                        </label>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Если Вы будете не одни, заполните поле ниже, пожалуйста</label>
-                        <input type="text" name="Спутник" class="form-input" placeholder="Имя и фамилия вашего спутника/спутницы">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Ваши предпочтения</label>
-                        <label class="custom-checkbox"><input type="checkbox" name="Предпочтения[]" value="Шампанское"><span class="check-mark"></span>Шампанское</label>
-                        <label class="custom-checkbox"><input type="checkbox" name="Предпочтения[]" value="Белое вино"><span class="check-mark"></span>Белое вино</label>
-                        <label class="custom-checkbox"><input type="checkbox" name="Предпочтения[]" value="Красное вино"><span class="check-mark"></span>Красное вино</label>
-                        <label class="custom-checkbox"><input type="checkbox" name="Предпочтения[]" value="Виски"><span class="check-mark"></span>Виски</label>
-                        <label class="custom-checkbox"><input type="checkbox" name="Предпочтения[]" value="Водка"><span class="check-mark"></span>Водка</label>
-                        <label class="custom-checkbox"><input type="checkbox" name="Предпочтения[]" value="Джин"><span class="check-mark"></span>Джин</label>
-                        <label class="custom-checkbox"><input type="checkbox" name="Предпочтения[]" value="Ром"><span class="check-mark"></span>Ром</label>
-                        <label class="custom-checkbox"><input type="checkbox" name="Предпочтения[]" value="Не пью алкоголь"><span class="check-mark"></span>Не пью алкоголь</label>
-                    </div>
-
-                    <button type="submit" class="submit-btn" id="submitBtn">Отправить</button>
-                </form>
-            </div>
-
-            <div class="success-message" id="successMessage">
-                <h3>Спасибо!</h3>
-                <p>Ваши ответы успешно отправлены.<br>С нетерпением ждём встречи!</p>
+    <!-- Секция 4: Календарь -->
+    <section class="reveal">
+        <div style="position: relative; display: inline-block; margin-bottom: 30px; text-align: left;">
+            <h2 style="font-weight: 300; letter-spacing: 4px; text-transform: uppercase; font-size: 1.3rem; margin: 0; position: relative; z-index: 2;">МЫ ЖДЁМ</h2>
+            <div class="cursive" style="position: absolute; right: -55px; top: -15px; font-size: 3.5rem; color: #f0f0f0; z-index: 1;">Вас</div>
+        </div>
+        
+        <div class="calendar-container">
+            <div class="cursive" style="font-size: 3rem; color: var(--text-dark); margin-bottom: 20px;">Июнь</div>
+            <div class="calendar-grid">
+                <div>1</div>
+                <div class="heart-date">2<div class="heart-date-svg"></div></div>
+                <div>3</div><div>4</div><div>5</div><div>6</div><div>7</div>
+                <div>8</div><div>9</div><div>10</div><div>11</div><div>12</div><div>13</div><div>14</div>
+                <div>15</div><div>16</div><div>17</div><div>18</div><div>19</div><div>20</div><div>21</div>
+                <div>22</div><div>23</div><div>24</div><div>25</div><div>26</div><div>27</div><div>28</div>
+                <div>29</div><div>30</div>
             </div>
         </div>
+    </section>
+
+    <!-- Секция 5: Локация 1 -->
+    <section class="reveal">
+        <div class="cursive">Локация №1</div>
+        <p class="section-title">Таганский Дворец Бракосочетания</p>
+        
+        <div class="parallax-container">
+            <div class="parallax-img" style="background-image: url('загс.jpg');"></div>
+        </div>
+        
+        <h3 style="letter-spacing: 3px; font-weight: 500;">АДРЕС ЗАГСА</h3>
+        <p style="font-size: 0.85rem; color: #666;">г. Москва, Таганская ул., 44</p>
+        
+        <div class="map-wrapper">
+            <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3A61be4eb1cbc37a2feb332c1f432abf51890675bf3200585323a826a758238915&amp;source=constructor"></iframe>
+        </div>
+        <a href="https://yandex.ru/maps/?rtext=~Москва,+Таганская+улица,+44&rtt=mt" target="_blank" class="btn">Маршрут в ЗАГС</a>
+    </section>
+
+    <!-- Секция 6: Локация 2 -->
+    <section class="reveal" style="background-color: #fafafa;">
+        <div class="cursive">Локация №2</div>
+        <p class="section-title">Праздничный ужин</p>
+        
+        <div class="parallax-container">
+            <div class="parallax-img" style="background-image: url('https://safarovadom.com/upload/dev2fun.imagecompress/webp/resize_cache/iblock/85c/800_600_0/eussl8bvtx772j02eh3uz1mz1k1wuoxt.webp');"></div>
+        </div>
+        
+        <h3 style="letter-spacing: 3px; font-weight: 500;">ЗАГОРОДНЫЙ ДОМИК</h3>
+        <p style="font-size: 0.85rem; color: #666;">Городской округ Балашиха, Садовое товарищество Вымпел, 4</p>
+        
+        <div class="map-wrapper">
+          <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3Afd1b42d456cdfdb0e80fcc7513180195dbdf020a153a7eaa7651154928934d08&amp;source=constructor" width="500" height="400" frameborder="0"></iframe>
+        </div>
+        <a href="https://yandex.ru/maps/?rtext=~Городской+округ+Балашиха,+Садовое+товарищество+Вымпел,+4&rtt=mt" target="_blank" class="btn">Маршрут к Домику</a>
+    </section>
+
+    <!-- Тайминг -->
+    <section class="reveal" style="background-color: var(--bg-beige);">
+        <h2 class="section-title">ТАЙМИНГ ДНЯ</h2>
+        <div class="timing-wrapper">
+            <div class="timing-item">
+                <div class="time-label">13:00</div><div class="timing-dot"></div>
+                <div class="timing-content"><div class="timing-content-desc">Сбор гостей</div></div>
+            </div>
+            <div class="timing-item">
+                <div class="time-label">13:30</div><div class="timing-dot"></div>
+                <div class="timing-content"><div class="timing-content-desc">Торжественная регистрация</div></div>
+            </div>
+            <div class="timing-item">
+                <div class="time-label">14:00</div><div class="timing-dot"></div>
+                <div class="timing-content"><div class="timing-content-desc">Фотосессия молодых</div></div>
+            </div>
+            <div class="timing-item">
+                <div class="time-label">16:00</div><div class="timing-dot"></div>
+                <div class="timing-content"><div class="timing-content-desc">Смена локации. Домик</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция пожеланий -->
+    <section class="reveal wishes-section">
+        <div class="wishes-box">
+            <div class="cursive" style="font-size: 2.8rem; margin-bottom: 15px;">Пожелания</div>
+            <h2 class="section-title" style="margin-bottom: 25px;">Ваше внимание - лучший подарок</h2>
+            <p style="font-size: 0.9rem; line-height: 1.8; font-weight: 300; color: #555;">
+                Главное для нас — Ваше присутствие в этот день. Но если вы захотите сделать нам подарок, мы будем признательны за вклад в бюджет нашей будущей семьи.
+            </p>
+            <div style="margin-top: 30px;">
+                <div style="font-size: 1.5rem; margin-bottom: 10px; color: var(--accent-gold);">🍷</div>
+                <p style="font-size: 0.85rem; font-style: italic; color: #777;">
+                    Будем благодарны, если вместо цветов вы подарите нам бутылку вашего любимого вина для нашей коллекции.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Таймер -->
+    <section id="rsvp" class="reveal">
+        <p class="section-title">До встречи осталось</p>
+        <div class="timer-display">
+            <div class="timer-item"><div class="timer-num-box" id="days">00</div><span>дней</span></div>
+            <div class="timer-item"><div class="timer-num-box" id="hours">00</div><span>часов</span></div>
+            <div class="timer-item"><div class="timer-num-box" id="minutes">00</div><span>минут</span></div>
+            <div class="timer-item"><div class="timer-num-box" id="seconds">00</div><span>секунд</span></div>
+        </div>
+    </section>
+
+    <section class="reveal" style="background-color: var(--white); padding-bottom: 120px;">
+        <div class="cursive" style="margin-bottom: 20px;">Павел & Ирина</div>
+        <h2 style="font-weight: 300; letter-spacing: 5px;">ЖДЁМ ВАС!</h2>
+    </section>
+
+    <!-- Кнопка открытия формы -->
+    <button onclick="openModal()" class="fixed-btn">Подтвердить присутствие</button>
+
+</div>
+
+<!-- === МОДАЛЬНОЕ ОКНО С ФОРМОЙ === -->
+<div class="modal-overlay" id="formModal">
+    <div class="modal-content">
+        <!-- Кнопка закрытия (крестик) -->
+        <button class="close-btn" onclick="closeModal()">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 1L13 13M1 13L13 1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </button>
+
+        <div id="formContainer">
+            <div class="form-header">
+                Пожалуйста, подтвердите Ваше присутствие
+            </div>
+
+            <!-- Форма Formspree -->
+            <form id="rsvpForm" action="https://formspree.io/f/xqewqroj" method="POST">
+                
+                <!-- Поле: Имя и фамилия -->
+                <div class="form-group">
+                    <label class="form-label">Имя и фамилия</label>
+                    <input type="text" name="Имя и фамилия" class="form-input" required>
+                </div>
+
+                <!-- Поле: Присутствие (Радиокнопки) -->
+                <div class="form-group">
+                    <label class="form-label">Планируете ли Вы присутствовать на нашей свадьбе?</label>
+                    
+                    <label class="custom-radio">
+                        <input type="radio" name="Присутствие" value="С удовольствием приду!" required>
+                        <span class="radio-mark"></span>
+                        С удовольствием приду!
+                    </label>
+                    
+                    <label class="custom-radio">
+                        <input type="radio" name="Присутствие" value="К сожалению, не смогу">
+                        <span class="radio-mark"></span>
+                        К сожалению, не смогу
+                    </label>
+                </div>
+
+                <!-- Поле: Спутник -->
+                <div class="form-group">
+                    <label class="form-label">Если Вы будете не одни, заполните поле ниже, пожалуйста</label>
+                    <input type="text" name="Спутник" class="form-input" placeholder="Имя и фамилия вашего спутника/спутницы">
+                </div>
+
+                <!-- Поле: Алкоголь (Чекбоксы) -->
+                <div class="form-group">
+                    <label class="form-label">Ваши предпочтения</label>
+                    
+                    <label class="custom-checkbox"><input type="checkbox" name="Предпочтения[]" value="Шампанское"><span class="check-mark"></span>Шампанское</label>
+                    <label class="custom-checkbox"><input type="checkbox" name="Предпочтения[]" value="Белое вино"><span class="check-mark"></span>Белое вино</label>
+                    <label class="custom-checkbox"><input type="checkbox" name="Предпочтения[]" value="Красное вино"><span class="check-mark"></span>Красное вино</label>
+                    <label class="custom-checkbox"><input type="checkbox" name="Предпочтения[]" value="Виски"><span class="check-mark"></span>Виски</label>
+                    <label class="custom-checkbox"><input type="checkbox" name="Предпочтения[]" value="Водка"><span class="check-mark"></span>Водка</label>
+                    <label class="custom-checkbox"><input type="checkbox" name="Предпочтения[]" value="Джин"><span class="check-mark"></span>Джин</label>
+                    <label class="custom-checkbox"><input type="checkbox" name="Предпочтения[]" value="Ром"><span class="check-mark"></span>Ром</label>
+                    <label class="custom-checkbox"><input type="checkbox" name="Предпочтения[]" value="Не пью алкоголь"><span class="check-mark"></span>Не пью алкоголь</label>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">Отправить</button>
+            </form>
+        </div>
+
+        <!-- Блок успешной отправки -->
+        <div class="success-message" id="successMessage">
+            <h3>Спасибо!</h3>
+            <p>Ваши ответы успешно отправлены.<br>С нетерпением ждём встречи!</p>
+        </div>
     </div>
-</div> <!-- Конец main-content -->
+</div>
 
 <script>
-    // === ЛОГИКА ОТКРЫТИЯ КОНВЕРТА ===
-    function openEnvelope() {
-        const envelope = document.getElementById('envelope');
-        const wrapper = document.getElementById('envelope-wrapper');
-        const main = document.getElementById('main-content');
+function openEnvelope() {
+    const envelope = document.getElementById('envelope');
+    const wrapper = document.getElementById('envelope-wrapper');
+    const main = document.getElementById('main-content');
 
-        envelope.classList.add('open');
+    // 1. Запускаем анимацию самого конверта
+    envelope.classList.add('open');
+    
+    // 2. Через небольшую паузу скрываем слой с конвертом и показываем сайт
+    setTimeout(() => {
+        wrapper.style.opacity = '0'; // Плавно растворяем фон конверта
+        main.classList.add('visible'); // Проявляем основной сайт
         
+        // 3. Полностью убираем слой конверта, чтобы он не мешал кликам
         setTimeout(() => {
-            wrapper.style.opacity = '0';
-            main.classList.add('visible');
-            
-            setTimeout(() => {
-                wrapper.style.visibility = 'hidden';
-                // Триггерим событие скролла, чтобы сработали анимации появления
-                window.dispatchEvent(new Event('scroll'));
-            }, 1000);
-        }, 800);
-    }
-
-    // === АНИМАЦИЯ ПРИ СКРОЛЛЕ ===
+            wrapper.style.visibility = 'hidden';
+        }, 1000);
+    }, 800);
+}
+    // АНИМАЦИЯ ПРИ СКРОЛЛЕ
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) entry.target.classList.add('active');
@@ -697,15 +842,18 @@
     const successMessage = document.getElementById('successMessage');
     const submitBtn = document.getElementById('submitBtn');
 
+    // Открыть окно
     function openModal() {
         modal.classList.add('active');
         document.body.classList.add('modal-open');
     }
 
+    // Закрыть окно
     function closeModal() {
         modal.classList.remove('active');
         document.body.classList.remove('modal-open');
         
+        // Сбрасываем форму через полсекунды (когда окно спрячется)
         setTimeout(() => {
             formContainer.style.display = 'block';
             successMessage.style.display = 'none';
@@ -713,14 +861,16 @@
         }, 500);
     }
 
+    // Закрытие при клике на темный фон вне формы
     modal.addEventListener('click', (e) => {
         if (e.target === modal) {
             closeModal();
         }
     });
 
+    // Перехват отправки формы (AJAX)
     form.addEventListener('submit', async function(event) {
-        event.preventDefault();
+        event.preventDefault(); // Останавливаем стандартную перезагрузку
         submitBtn.innerText = 'Отправка...';
         submitBtn.disabled = true;
 
@@ -736,8 +886,11 @@
             });
 
             if (response.ok) {
+                // Прячем форму, показываем "Спасибо!"
                 formContainer.style.display = 'none';
                 successMessage.style.display = 'block';
+                
+                // Автоматически закроем окно через 4 секунды
                 setTimeout(() => closeModal(), 4000);
             } else {
                 alert('Упс! Возникла проблема при отправке формы. Попробуйте еще раз.');
