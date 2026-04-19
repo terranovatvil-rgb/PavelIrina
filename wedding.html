@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Свадебное приглашение</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@1,400&family=Great+Vibes&display=swap" rel="stylesheet">
+    
+    <style>
+	/* Стили для фона и контейнера конверта */
+#envelope-wrapper {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: #e5ddd3; /* Цвет фона за конвертом */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    transition: opacity 1s ease, visibility 1s;
+}
+
+/* Сам конверт */
+.envelope {
+    position: relative;
+    width: 300px;
+    height: 200px;
+    background: #d4c7b8;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.5s ease;
+}
+
+.envelope:hover {
+    transform: translateY(-10px) scale(1.02);
+}
+
+/* Верхний клапан (крышка) конверта */
+.envelope::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    z-index: 2;
+    border-top: 110px solid #c5b6a5;
+    border-left: 150px solid transparent;
+    border-right: 150px solid transparent;
+    transform-origin: top;
+    transition: transform 0.5s ease 0.1s;
+}
+
+/* Состояние при открытии — крышка откидывается */
+.envelope.open::before {
+    transform: rotateX(180deg);
+    z-index: 0;
+}
+
+/* Листок бумаги внутри конверта */
+.envelope-paper {
+    position: absolute;
+    top: 10px; left: 10px; right: 10px; bottom: 10px;
+    background: white;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.8s ease;
+}
+
+/* Листок выезжает вверх */
+.envelope.open .envelope-paper {
+    transform: translateY(-120px);
+}
+
+/* Текст на листке и надпись на конверте */
+.envelope-text {
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 0.7rem;
+    color: #2c2e36;
+}
+
+.envelope-label {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    font-family: 'Great Vibes', cursive;
+    font-size: 2rem;
+    color: white;
+    z-index: 3;
+    pointer-events: none;
+}
+
+/* Состояния для основного контента сайта */
+#main-content {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1.5s ease;
+}
+
+#main-content.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+        :root {
+            --bg-beige: #e5ddd3;
+            --text-dark: #2c2e36;
+            --text-label: #3a4150; /* Цвет для заголовков формы */
+            --text-muted: #71717a; /* Цвет для подзаголовков формы */
+            --accent-gold: #b5a491;
+            --white: #ffffff;
+            --gray-btn: #32353f;
+            --border-color: #d4d4d8;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f0f0f0;
+            color: var(--text-dark);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* Блокировка скролла, когда открыта форма */
+        body.modal-open {
+            overflow: hidden;
+        }
+
+        .main-wrapper {
+            max-width: 450px;
+            margin: 0 auto;
+            background: var(--white);
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            padding-bottom: 80px; 
+            min-height: 100vh;
+        }
+
+        section { padding: 50px 25px; text-align: center; }
+
+        /* АНИМАЦИИ ПОЯВЛЕНИЯ */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ЭФФЕКТ ПАРАЛЛАКСА ДЛЯ ФОТО */
+        .parallax-container {
+            width: 100%;
+            height: 180px;
+            overflow: hidden;
+            position: relative;
+            margin: 25px 0;
+            border-radius: 2px;
+        }
+
+        .parallax-img {
+            position: absolute;
+            top: -2%;
+            left: 0;
+            width: 100%;
+            height: 120%;
+            background-size: cover;
+            background-position: center;
+            will-change: transform;
+        }
+
+        /* Герой-секция */
+        .hero-section {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #333; /* Фолбек */
+            color: white;
+            padding: 0 25px;
+            position: relative;
+            overflow: hidden; /* Скрываем края параллакса */
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120%; /* Запас для параллакс-сдвига */
+            background-image: url('фон.png'); /* Заглушка, замените на свое */
+            background-size: cover;
+            background-position: center;
+            z-index: 0;
+            will-change: transform;
+        }
+
+        .hero-section > div:not(.hero-bg) {
+            position: relative;
+            z-index: 1; /* Чтобы текст был поверх фона */
+        }
+
+        .cursive {
+            font-family: 'Great Vibes', cursive;
+            font-size: 4.5rem;
+            color: var(--accent-gold);
+            line-height: 1;
+        }
+
+        .hero-section .cursive {
+            color: white;
+        }
+
+        .section-title {
+            letter-spacing: 3px;
+            font-weight: 400;
+            text-transform: uppercase;
+            font-size: 1.1rem;
+            margin: 15px 0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 20px;
+            border: 1px solid var(--text-dark);
+            text-decoration: none;
+            color: var(--text-dark);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 10px 5px;
+            transition: 0.3s;
+            background: transparent;
+            cursor: pointer;
+        }
+        .btn:hover { background: var(--text-dark); color: white; }
+
+        .moments-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .moment-img {
+            background-color: #ddd;
+            background-size: cover;
+            background-position: center;
+            border-radius: 2px;
+        }
+        .moment-full { grid-column: 1 / -1; height: 350px; }
+        .moment-half { height: 200px; }
+
+        .calendar-container {
+            border: 1px solid #999;
+            padding: 30px 20px 40px;
+            margin: 20px auto;
+            max-width: 280px;
+            background: var(--white);
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 20px 10px;
+            font-size: 0.9rem;
+            color: #333;
+            margin-top: 25px;
+        }
+        .calendar-grid div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .heart-date {
+            position: relative;
+            z-index: 10; 
+            font-weight: 500;
+        }
+        .heart-date-svg {
+            position: absolute;
+            width: 40px; 
+            height: 40px;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(-5deg);
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="%23c43535" stroke-width="1.5"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .map-wrapper {
+            position: relative; width: 100%; padding-top: 60%;
+            margin: 20px 0 40px; border: 1px solid #eee;
+            border-radius: 4px; overflow: hidden;
+        }
+        .map-wrapper iframe {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;
+        }
+
+        .timing-wrapper {
+            text-align: left;
+            margin-top: 30px;
+            position: relative;
+            padding-left: 20px;
+        }
+        .timing-wrapper::before {
+            content: ''; position: absolute;
+            left: 85px; top: 10px; bottom: 20px;
+            width: 1px; background-color: #ccc;
+        }
+        .timing-item { display: flex; align-items: flex-start; margin-bottom: 35px; position: relative; }
+        .time-label { width: 50px; font-size: 1.1rem; font-weight: 300; padding-top: 2px; }
+        .timing-dot {
+            width: 9px; height: 9px; background-color: var(--text-dark);
+            border-radius: 50%; margin: 8px 20px 0 10px; z-index: 2; border: 4px solid #e5ddd3;
+        }
+        .timing-content { flex: 1; }
+        .timing-content-desc { font-size: 1.1rem; color: #444; line-height: 1.4; font-weight: 300; }
+
+        .timer-display { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; }
+        .timer-item { flex: 1; text-align: center; }
+        .timer-num-box {
+            background-color: #f5f5f5; border-radius: 5px; padding: 15px 0;
+            font-size: 1.8rem; font-weight: 400; color: #333; margin-bottom: 10px;
+        }
+        .timer-item span { font-family: 'Great Vibes', cursive; font-size: 1.1rem; color: #555; }
+
+        .fixed-btn {
+            position: fixed; bottom: 0; width: 100%; max-width: 450px;
+            background: #2c2e36; color: white; border: none; border-top: 1px solid #444;
+            text-align: center; padding: 20px 0; text-decoration: none; 
+            text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; z-index: 100;
+            cursor: pointer; display: block;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .wishes-section {
+            background-color: var(--white);
+            padding: 60px 30px;
+        }
+        .wishes-box {
+            border: 1px solid var(--accent-gold);
+            padding: 40px 20px;
+            position: relative;
+        }
+        .wishes-box::after {
+            content: '';
+            position: absolute;
+            top: 5px; left: 5px; right: 5px; bottom: 5px;
+            border: 1px solid var(--accent-gold);
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        /* === СТИЛИ ФОРМЫ И МОДАЛЬНОГО ОКНА === */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: flex-end; /* Выезд снизу */
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: var(--white);
+            width: 100%;
+            max-width: 450px;
+            max-height: 90vh;
+            border-radius: 20px 20px 0 0;
+            padding: 25px;
+            box-sizing: border-box;
+            position: relative;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            text-align: left;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 28px;
+            height: 28px;
+            background: #a1a1aa;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 0;
+            z-index: 10;
+        }
+
+        .form-header {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            font-weight: 400;
+            margin: 10px 30px 30px;
+            line-height: 1.4;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            color: var(--text-label);
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        /* Текстовые поля (линия снизу) */
+        .form-input {
+            width: 100%;
+            border: none;
+            border-bottom: 1px solid var(--text-dark);
+            padding: 8px 0;
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-dark);
+            background: transparent;
+            border-radius: 0; /* Для iOS */
+            outline: none;
+        }
+        
+        .form-input::placeholder {
+            color: #a1a1aa;
+            font-weight: 300;
+            font-size: 0.9rem;
+        }
+
+        .form-input:focus {
+            border-bottom-color: var(--accent-gold);
+        }
+
+        /* Стили для кастомных радио и чекбоксов */
+        .custom-radio, .custom-checkbox {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--text-label);
+            font-weight: 400;
+        }
+
+        .custom-radio input, .custom-checkbox input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        /* Иконка радио */
+        .radio-mark {
+            height: 16px;
+            width: 16px;
+            border: 1px solid var(--text-label);
+            border-radius: 50%;
+            margin-right: 12px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .custom-radio input:checked ~ .radio-mark::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--text-label);
+        }
+
+        /* Иконка чекбокса */
+        .check-mark {
+            height: 16px;
+            width: 16px;
+            border: 1px solid var(--text-label);
+            border-radius: 2px;
+            margin-right: 12px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .custom-checkbox input:checked ~ .check-mark::after {
+            content: "";
+            position: absolute;
+            left: 5px;
+            top: 2px;
+            width: 4px;
+            height: 8px;
+            border: solid var(--text-label);
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: var(--text-dark);
+            color: var(--white);
+            border: none;
+            padding: 16px;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 4px;
+            margin-top: 20px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        /* Сообщение об успешной отправке */
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .success-message h3 { font-family: 'Great Vibes', cursive; font-size: 2.5rem; color: var(--accent-gold); margin-bottom: 10px; }
+        .success-message p { font-size: 0.95rem; line-height: 1.5; }
+    </style>
+</head>
+<body>
+<div id="envelope-wrapper">
+    <div class="envelope" id="envelope" onclick="openEnvelope()">
+        <div class="envelope-paper">
+            <div class="envelope-text">
+                <p>Павел & Ирина</p>
+                <p style="font-size: 0.5rem; margin-top: 10px;">Нажмите, чтобы открыть</p>
+            </div>
+        </div>
+        <div class="envelope-label">Приглашение</div>
+    </div>
+</div>
+
+<div id="main-content">
+    </div>
+<div class="main-wrapper">
+    
+    <!-- Секция 1: Герой -->
+    <section class="hero-section">
+        <div class="hero-bg"></div>
+        <div style="letter-spacing: 5px; text-transform: uppercase; font-size: 1.1rem; margin-top: -80px;">The Wedding Day</div>
+        <div class="cursive" style="margin: 20px 0;">Павел & Ирина</div>
+    </section>
+
+    <!-- Секция 2: Приветствие -->
+    <section class="reveal" style="background-color: var(--bg-beige);">
+        <div class="cursive" style="color: var(--text-dark);">Мы</div>
+        <h2 class="section-title">Официально станем семьей</h2>
+        <p style="font-size: 0.9rem; line-height: 1.7; font-weight: 300;">
+            Если вы сейчас читаете этот текст, значит мы приглашаем Вас на самый главный день в нашей жизни.
+        </p>
+        
+        <div class="parallax-container">
+            <div class="parallax-img" style="background-image: url('руки.png');"></div>
+        </div>
+    </section>
+
+    <!-- Секция 3: Moments -->
+    <section class="reveal">
+        <div class="section-title" style="letter-spacing: 5px; margin-bottom: 30px;">MOMENTS</div>
+        <div class="moments-grid">
+            <div class="moment-img moment-full" style="background-image: url('мост1.png');"></div>
+            <div class="moment-img moment-half" style="background-image: url('самолет.png');"></div>
+            <div class="moment-img moment-half" style="background-image: url('пляж.png');"></div>
+        </div>
+    </section>
+
+    <!-- Секция 4: Календарь -->
+    <section class="reveal">
+        <div style="position: relative; display: inline-block; margin-bottom: 30px; text-align: left;">
+            <h2 style="font-weight: 300; letter-spacing: 4px; text-transform: uppercase; font-size: 1.3rem; margin: 0; position: relative; z-index: 2;">МЫ ЖДЁМ</h2>
+            <div class="cursive" style="position: absolute; right: -55px; top: -15px; font-size: 3.5rem; color: #f0f0f0; z-index: 1;">Вас</div>
+        </div>
+        
+        <div class="calendar-container">
+            <div class="cursive" style="font-size: 3rem; color: var(--text-dark); margin-bottom: 20px;">Июнь</div>
+            <div class="calendar-grid">
+                <div>1</div>
+                <div class="heart-date">2<div class="heart-date-svg"></div></div>
+                <div>3</div><div>4</div><div>5</div><div>6</div><div>7</div>
+                <div>8</div><div>9</div><div>10</div><div>11</div><div>12</div><div>13</div><div>14</div>
+                <div>15</div><div>16</div><div>17</div><div>18</div><div>19</div><div>20</div><div>21</div>
+                <div>22</div><div>23</div><div>24</div><div>25</div><div>26</div><div>27</div><div>28</div>
+                <div>29</div><div>30</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция 5: Локация 1 -->
+    <section class="reveal">
+        <div class="cursive">Локация №1</div>
+        <p class="section-title">Таганский Дворец Бракосочетания</p>
+        
+        <div class="parallax-container">
+            <div class="parallax-img" style="background-image: url('загс.jpg');"></div>
+        </div>
+        
+        <h3 style="letter-spacing: 3px; font-weight: 500;">АДРЕС ЗАГСА</h3>
+        <p style="font-size: 0.85rem; color: #666;">г. Москва, Таганская ул., 44</p>
+        
+        <div class="map-wrapper">
+            <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3A61be4eb1cbc37a2feb332c1f432abf51890675bf3200585323a826a758238915&amp;source=constructor"></iframe>
+        </div>
+        <a href="https://yandex.ru/maps/?rtext=~55.739073, 37.669100" target="_blank" class="btn">Маршрут в ЗАГС</a>
+    </section>
+
+    <!-- Секция 6: Локация 2 -->
+    <section class="reveal" style="background-color: #fafafa;">
+        <div class="cursive">Локация №2</div>
+        <p class="section-title">Праздничный ужин</p>
+        
+        <div class="parallax-container">
+            <div class="parallax-img" style="background-image: url('домик.png');"></div>
+        </div>
+        
+        <h3 style="letter-spacing: 3px; font-weight: 500;">ЗАГОРОДНЫЙ ДОМИК</h3>
+        <p style="font-size: 0.85rem; color: #666;">Городской округ Балашиха, Садовое товарищество Вымпел, 4</p>
+        
+        <div class="map-wrapper">
+          <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3Afd1b42d456cdfdb0e80fcc7513180195dbdf020a153a7eaa7651154928934d08&amp;source=constructor" width="500" height="400" frameborder="0"></iframe>
+        </div>
+        <a href="https://yandex.ru/maps/?rtext=~55.736336, 38.093769" target="_blank" class="btn">МАРШРУТ К ДОМИКУ</a>
+    </section>
+
+    <!-- Тайминг -->
+    <section class="reveal" style="background-color: var(--bg-beige);">
+        <h2 class="section-title">ТАЙМИНГ ДНЯ</h2>
+        <div class="timing-wrapper">
+            <div class="timing-item">
+                <div class="time-label">13:00</div><div class="timing-dot"></div>
+                <div class="timing-content"><div class="timing-content-desc">Сбор гостей</div></div>
+            </div>
+            <div class="timing-item">
+                <div class="time-label">13:30</div><div class="timing-dot"></div>
+                <div class="timing-content"><div class="timing-content-desc">Торжественная регистрация</div></div>
+            </div>
+            <div class="timing-item">
+                <div class="time-label">14:00</div><div class="timing-dot"></div>
+                <div class="timing-content"><div class="timing-content-desc">Фотосессия молодых</div></div>
+            </div>
+            <div class="timing-item">
+                <div class="time-label">16:00</div><div class="timing-dot"></div>
+                <div class="timing-content">
+                <div class="timing-content-desc">Смена локации. Домик</div>
+        <!-- Блок примечания -->
+                <div style="font-size: 0.85rem; color: #777; margin-top: 8px; line-height: 1.4;">
+                <span style="font-weight: 500;">Примечание:</span><br>
+            В доме можно остаться до 04.02
+        </div>
+    </div>
+</div>
+        </div>
+    </section>
+
+    <!-- Секция пожеланий -->
+    <section class="reveal wishes-section">
+        <div class="wishes-box">
+            <div class="cursive" style="font-size: 2.8rem; margin-bottom: 15px;">Пожелания</div>
+            <h2 class="section-title" style="margin-bottom: 25px;">Ваше внимание - лучший подарок</h2>
+            <p style="font-size: 0.9rem; line-height: 1.8; font-weight: 300; color: #555;">
+                Главное для нас — Ваше присутствие в этот день. Но если вы захотите сделать нам подарок, мы будем очень признательны за вклад в бюджет нашей будущей семьи.
+            </p>
+            <div style="margin-top: 30px;">
+                <div style="font-size: 1.5rem; margin-bottom: 10px; color: var(--accent-gold);">🚫🌹</div>
+                <p style="font-size: 0.85rem; font-style: italic; color: #777;">
+                    Будем благодарны, если вы воздержитесь от дарения цветов и криков "Горько".
+				</p>
+				<p style="font-size: 0.85rem; font-style: italic; color: #777;">
+				Мы не планируем проводить пышное и масштабное мероприятие, просто хотим в этот день побыть в кругу самых близких для нас людей - с Вами.<p>
+                </p>
+				<p style="font-size: 0.85rem; font-style: italic; color: #777;">
+				Помните, что в первую очередь - это наш день и мы хотим, чтобы он был таким, каким мы его задумали:.<p>
+				</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Таймер -->
+    <section id="rsvp" class="reveal">
+        <p class="section-title">До встречи осталось</p>
+        <div class="timer-display">
+            <div class="timer-item"><div class="timer-num-box" id="days">00</div><span>дней</span></div>
+            <div class="timer-item"><div class="timer-num-box" id="hours">00</div><span>часов</span></div>
+            <div class="timer-item"><div class="timer-num-box" id="minutes">00</div><span>минут</span></div>
+            <div class="timer-item"><div class="timer-num-box" id="seconds">00</div><span>секунд</span></div>
+        </div>
+    </section>
+
+    <section class="reveal" style="background-color: var(--white); padding-bottom: 120px;">
+        <div class="cursive" style="margin-bottom: 20px;">Павел & Ирина</div>
+        <h2 style="font-weight: 300; letter-spacing: 5px;">ЖДЁМ ВАС!</h2>
+    </section>
+
+    <!-- Кнопка открытия формы -->
+    <button onclick="openModal()" class="fixed-btn">Подтвердить присутствие</button>
+
+</div>
+
+<!-- === МОДАЛЬНОЕ ОКНО С ФОРМОЙ === -->
+<div class="modal-overlay" id="formModal">
+    <div class="modal-content">
+        <!-- Кнопка закрытия (крестик) -->
+        <button class="close-btn" onclick="closeModal()">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 1L13 13M1 13L13 1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </button>
+
+        <div id="formContainer">
+            <div class="form-header">
+                Пожалуйста, подтвердите Ваше присутствие
+            </div>
+
+            <!-- Форма Formspree -->
+            <form id="rsvpForm" action="https://formspree.io/f/xqewqroj" method="POST">
+                
+                <!-- Поле: Имя и фамилия -->
+                <div class="form-group">
+                    <label class="form-label">Имя и фамилия</label>
+                    <input type="text" name="Имя и фамилия" class="form-input" required>
+                </div>
+
+                <!-- Поле: Присутствие (Радиокнопки) -->
+                <div class="form-group">
+                    <label class="form-label">Планируете ли Вы присутствовать на нашей свадьбе?</label>
+                    
+                    <label class="custom-radio">
+                        <input type="radio" name="Присутствие" value="С удовольствием приду!" required>
+                        <span class="radio-mark"></span>
+                        С удовольствием приду!
+                    </label>
+                    
+                    <label class="custom-radio">
+                        <input type="radio" name="Присутствие" value="К сожалению, не смогу">
+                        <span class="radio-mark"></span>
+                        К сожалению, не смогу
+                    </label>
+                </div>
+
+                <!-- Поле: Спутник -->
+                <div class="form-group">
+                    <label class="form-label">Если Вы будете не одни, заполните поле ниже, пожалуйста</label>
+                    <input type="text" name="Спутник" class="form-input" placeholder="Имя и фамилия вашего спутника/спутницы">
+                </div>
+
+                <!-- Поле: Алкоголь (Чекбоксы) -->
+                <div class="form-group">
+                    <label class="form-label">Ваши предпочтения</label>
+                    
+                    <label class="custom-checkbox"><input type="checkbox" name="Предпочтения[]" value="Шампанское"><span class="check-mark"></span>Шампанское</label>
+                    <label class="custom-checkbox"><input type="checkbox" name="Предпочтения[]" value="Белое вино"><span class="check-mark"></span>Белое вино</label>
+                    <label class="custom-checkbox"><input type="checkbox" name="Предпочтения[]" value="Красное вино"><span class="check-mark"></span>Красное вино</label>
+                    <label class="custom-checkbox"><input type="checkbox" name="Предпочтения[]" value="Виски"><span class="check-mark"></span>Виски</label>
+                    <label class="custom-checkbox"><input type="checkbox" name="Предпочтения[]" value="Водка"><span class="check-mark"></span>Водка</label>
+					<label class="custom-checkbox"><input type="checkbox" name="Предпочтения[]" value="Коньяк"><span class="check-mark"></span>Коньяк</label>
+                    <label class="custom-checkbox"><input type="checkbox" name="Предпочтения[]" value="Джин"><span class="check-mark"></span>Джин</label>
+                    <label class="custom-checkbox"><input type="checkbox" name="Предпочтения[]" value="Ром"><span class="check-mark"></span>Ром</label>
+                    <label class="custom-checkbox"><input type="checkbox" name="Предпочтения[]" value="Не пью алкоголь"><span class="check-mark"></span>Не пью алкоголь</label>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">Отправить</button>
+            </form>
+        </div>
+
+        <!-- Блок успешной отправки -->
+        <div class="success-message" id="successMessage">
+            <h3>Спасибо!</h3>
+            <p>Ваши ответы успешно отправлены.<br>С нетерпением ждём встречи!</p>
+        </div>
+    </div>
+</div>
+
+<script>
+function openEnvelope() {
+    const envelope = document.getElementById('envelope');
+    const wrapper = document.getElementById('envelope-wrapper');
+    const main = document.getElementById('main-content');
+
+    // 1. Запускаем анимацию самого конверта
+    envelope.classList.add('open');
+    
+    // 2. Через небольшую паузу скрываем слой с конвертом и показываем сайт
+    setTimeout(() => {
+        wrapper.style.opacity = '0'; // Плавно растворяем фон конверта
+        main.classList.add('visible'); // Проявляем основной сайт
+        
+        // 3. Полностью убираем слой конверта, чтобы он не мешал кликам
+        setTimeout(() => {
+            wrapper.style.visibility = 'hidden';
+        }, 1000);
+    }, 800);
+}
+    // АНИМАЦИЯ ПРИ СКРОЛЛЕ
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('active');
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // СКРИПТ ПАРАЛЛАКСА
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        
+        // Параллакс для главной фоновой картинки (шапка)
+        const heroBg = document.querySelector('.hero-bg');
+        if (heroBg) {
+            heroBg.style.transform = `translateY(${scrolled * 0.3}px)`;
+        }
+
+        document.querySelectorAll('.parallax-img').forEach(img => {
+            const parent = img.parentElement;
+            const speed = 0.2; 
+            const rect = parent.getBoundingClientRect();
+            
+            if (rect.top < window.innerHeight && rect.bottom > 0) {
+                const shift = (window.innerHeight - rect.top) * speed;
+                img.style.transform = `translateY(${shift - 100}px)`; 
+            }
+        });
+    });
+
+    // ТАЙМЕР
+    const targetDate = new Date("June 2, 2026 13:30:00").getTime();
+    setInterval(() => {
+        const diff = targetDate - new Date().getTime();
+        if (diff >= 0) {
+            document.getElementById("days").innerText = Math.floor(diff / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+            document.getElementById("hours").innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+            document.getElementById("minutes").innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+            document.getElementById("seconds").innerText = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
+        }
+    }, 1000);
+
+    // === ЛОГИКА МОДАЛЬНОГО ОКНА И ФОРМЫ ===
+    const modal = document.getElementById('formModal');
+    const form = document.getElementById('rsvpForm');
+    const formContainer = document.getElementById('formContainer');
+    const successMessage = document.getElementById('successMessage');
+    const submitBtn = document.getElementById('submitBtn');
+
+    // Открыть окно
+    function openModal() {
+        modal.classList.add('active');
+        document.body.classList.add('modal-open');
+    }
+
+    // Закрыть окно
+    function closeModal() {
+        modal.classList.remove('active');
+        document.body.classList.remove('modal-open');
+        
+        // Сбрасываем форму через полсекунды (когда окно спрячется)
+        setTimeout(() => {
+            formContainer.style.display = 'block';
+            successMessage.style.display = 'none';
+            form.reset();
+        }, 500);
+    }
+
+    // Закрытие при клике на темный фон вне формы
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    // Перехват отправки формы (AJAX)
+    form.addEventListener('submit', async function(event) {
+        event.preventDefault(); // Останавливаем стандартную перезагрузку
+        submitBtn.innerText = 'Отправка...';
+        submitBtn.disabled = true;
+
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch(form.action, {
+                method: form.method,
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                // Прячем форму, показываем "Спасибо!"
+                formContainer.style.display = 'none';
+                successMessage.style.display = 'block';
+                
+                // Автоматически закроем окно через 4 секунды
+                setTimeout(() => closeModal(), 4000);
+            } else {
+                alert('Упс! Возникла проблема при отправке формы. Попробуйте еще раз.');
+            }
+        } catch (error) {
+            alert('Произошла ошибка сети. Проверьте интернет-соединение.');
+        } finally {
+            submitBtn.innerText = 'Отправить';
+            submitBtn.disabled = false;
+        }
+    });
+</script>
+
+</body>
+</html>
